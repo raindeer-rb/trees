@@ -12,6 +12,8 @@ module Trees
 
     attr_reader :root_node
 
+    Result = Data.define(:line, :params)
+
     def initialize
       @root_node = TrieNode.new
     end
@@ -37,12 +39,12 @@ module Trees
     def match(path:, current_node: @root_node, current_index: 0, params: {})
       return [] if (key = path[current_index]).nil?
 
-      blocks = []
+      results = []
 
       # Static path segment.
       if (child_node = current_node.child(key:))
-        blocks << child_node.line if child_node.line
-        blocks = [*blocks, *match(path:, current_node: child_node, current_index: current_index + 1, params:)]
+        results << Result.new(line: child_node.line, params:) if child_node.line
+        results = [*results, *match(path:, current_node: child_node, current_index: current_index + 1, params:)]
       end
 
       # Dynamic path segment.
@@ -52,11 +54,11 @@ module Trees
         arg, next_index = capture_arg(start_index: current_index, path:)
         params[param.delete_prefix(':').to_sym] = arg
 
-        blocks << child_node.line if child_node.line
-        blocks = [*blocks, *match(path:, current_node: child_node, current_index: next_index, params:)]
+        results << Result.new(line: child_node.line, params:) if child_node.line
+        results = [*results, *match(path:, current_node: child_node, current_index: next_index, params:)]
       end
 
-      blocks
+      results
     end
 
     private

@@ -5,9 +5,9 @@ require_relative '../lib/trees'
 module CLI
   extend Trees
 
-  line('talk') do
+  line('say :word') do |word|
     summary { 'Talks to the user.' }
-    execute { puts 'Hello' }
+    execute { puts word }
   end
 end
 

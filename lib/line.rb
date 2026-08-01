@@ -6,11 +6,12 @@ module Trees
   class Line
     include LowType
 
-    attr_reader :path
+    attr_reader :path, :params
     attr_accessor :summary, :execute
 
-    def initialize(path: String)
+    def initialize(path: String, params: {})
       @path = path
+      @params = params
 
       @summary = nil
       @execute = nil

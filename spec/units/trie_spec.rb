@@ -35,8 +35,8 @@ module Trees
       context 'with a command' do
         it 'matches line' do
           trie.merge(line: Line.new(path: 'command'))
-          expect(trie.match(path: 'command')).to all(be_instance_of(Line))
-          expect(trie.match(path: 'command 1').first).to have_attributes(path: 'command')
+          expect(trie.match(path: 'command')).to all(be_instance_of(Trie::Result))
+          expect(trie.match(path: 'command 1').first.line).to have_attributes(path: 'command')
         end
       end
 
@@ -44,8 +44,8 @@ module Trees
         it 'matches line' do
           trie.merge(line: Line.new(path: 'command :arg'))
 
-          expect(trie.match(path: 'command 1')).to all(be_instance_of(Line))
-          expect(trie.match(path: 'command 1').first).to have_attributes(path: 'command :arg')
+          expect(trie.match(path: 'command 1')).to all(be_instance_of(Trie::Result))
+          expect(trie.match(path: 'command 1').first.line).to have_attributes(path: 'command :arg')
         end
       end
 
@@ -56,8 +56,8 @@ module Trees
         end
 
         it 'matches lines' do
-          expect(trie.match(path: 'command subcommand 1')).to all(be_instance_of(Line))
-          expect(trie.match(path: 'command subcommand 1').last).to have_attributes(path: 'command subcommand :arg_1')
+          expect(trie.match(path: 'command subcommand 1')).to all(be_instance_of(Trie::Result))
+          expect(trie.match(path: 'command subcommand 1').last.line).to have_attributes(path: 'command subcommand :arg_1')
         end
       end
 
@@ -73,7 +73,7 @@ module Trees
           it 'matches line' do
             trie.merge(line: Line.new(path: ':arg_1'))
 
-            expect(trie.match(path: 'username').first).to have_attributes(path: ':arg_1')
+            expect(trie.match(path: 'username').first.line).to have_attributes(path: ':arg_1')
           end
         end
 
@@ -81,7 +81,7 @@ module Trees
           it 'matches line' do
             trie.merge(line: Line.new(path: ':arg_1 :arg_2'))
 
-            expect(trie.match(path: 'username 123').first).to have_attributes(path: ':arg_1 :arg_2')
+            expect(trie.match(path: 'username 123').first.line).to have_attributes(path: ':arg_1 :arg_2')
           end
         end
       end
