@@ -26,8 +26,8 @@ module Trees
     @current_line.execute = block
   end
 
-  def run(args)
-    results = trie.match(path: args.join(' '))
+  def run(tokens)
+    results = trie.match(tokens:)
 
     execute_block(results:)
   end

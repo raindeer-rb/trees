@@ -29,14 +29,27 @@ module Trees
         expect(matching_node(node: trie.root_node, path: 'command :arg')).to be_truthy
         expect(matching_node(node: trie.root_node, path: 'command :arg subcommand')).to be_truthy
       end
+
+      it 'raises when the same route is registered twice' do
+        trie.merge(line: Line.new(path: 'command'))
+
+        expect do
+          trie.merge(line: Line.new(path: 'command'))
+        end.to raise_error(Trie::DuplicatePathError)
+      end
     end
 
     describe '#match' do
       context 'with a command' do
         it 'matches line' do
           trie.merge(line: Line.new(path: 'command'))
-          expect(trie.match(path: 'command')).to all(be_instance_of(Trie::Result))
-          expect(trie.match(path: 'command 1').first.line).to have_attributes(path: 'command')
+          expect(trie.match(tokens: ['command'])).to all(be_instance_of(Trie::Result))
+        end
+
+        it 'does not match when there is unconsumed trailing input' do
+          trie.merge(line: Line.new(path: 'command'))
+
+          expect(trie.match(tokens: %w[command 1])).to eq([])
         end
       end
 
@@ -44,8 +57,17 @@ module Trees
         it 'matches line' do
           trie.merge(line: Line.new(path: 'command :arg'))
 
-          expect(trie.match(path: 'command 1')).to all(be_instance_of(Trie::Result))
-          expect(trie.match(path: 'command 1').first.line).to have_attributes(path: 'command :arg')
+          expect(trie.match(tokens: %w[command 1])).to all(be_instance_of(Trie::Result))
+          expect(trie.match(tokens: %w[command 1]).first.line).to have_attributes(path: 'command :arg')
+        end
+
+        it 'preserves a multi-word token as a single arg value instead of re-splitting on space' do
+          trie.merge(line: Line.new(path: 'say :word'))
+
+          result = trie.match(tokens: ['say', 'hello world']).first
+
+          expect(result.line).to have_attributes(path: 'say :word')
+          expect(result.params[:word]).to eq('hello world')
         end
       end
 
@@ -56,8 +78,8 @@ module Trees
         end
 
         it 'matches lines' do
-          expect(trie.match(path: 'command subcommand 1')).to all(be_instance_of(Trie::Result))
-          expect(trie.match(path: 'command subcommand 1').last.line).to have_attributes(path: 'command subcommand :arg_1')
+          expect(trie.match(tokens: %w[command subcommand 1])).to all(be_instance_of(Trie::Result))
+          expect(trie.match(tokens: %w[command subcommand 1]).last.line).to have_attributes(path: 'command subcommand :arg_1')
         end
       end
 
@@ -68,12 +90,12 @@ module Trees
           trie.merge(line: Line.new(path: 'command :arg_1 subcommand'))
           trie.merge(line: Line.new(path: 'command :arg_1 subcommand :arg_2'))
         end
-  
+
         context 'with one arg' do
           it 'matches line' do
             trie.merge(line: Line.new(path: ':arg_1'))
 
-            expect(trie.match(path: 'username').first.line).to have_attributes(path: ':arg_1')
+            expect(trie.match(tokens: ['username']).first.line).to have_attributes(path: ':arg_1')
           end
         end
 
@@ -81,8 +103,19 @@ module Trees
           it 'matches line' do
             trie.merge(line: Line.new(path: ':arg_1 :arg_2'))
 
-            expect(trie.match(path: 'username 123').first.line).to have_attributes(path: ':arg_1 :arg_2')
+            expect(trie.match(tokens: %w[username 123]).first.line).to have_attributes(path: ':arg_1 :arg_2')
           end
+        end
+      end
+
+      context 'with a flag holding a value in the same token' do
+        it 'captures the value after the literal prefix' do
+          trie.merge(line: Line.new(path: 'build --tag=:name'))
+
+          result = trie.match(tokens: ['build', '--tag=prod']).first
+
+          expect(result.line).to have_attributes(path: 'build --tag=:name')
+          expect(result.params[:name]).to eq('prod')
         end
       end
     end
