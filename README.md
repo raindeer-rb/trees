@@ -103,13 +103,25 @@ line('@:environment command')
 
 ### `--flag`, `-f`
 
-...
+### Boolean Flag [UNRELEASED]
+
+### Value Flag
+
+```ruby
+line('build --env=:environment') do |environment|
+  # The environment variable is now available.
+end
+```
 
 ### `subcommand`
 
-The literal text with no special characters will be interpreted as a subcommand.
+Literal text will be interpreted as a subcommand.
 
-...
+```ruby
+line('command subcommand') do
+  # ...
+end
+```
 
 ### Summary block
 

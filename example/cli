@@ -9,6 +9,10 @@ module CLI
     summary { 'Talks to the user.' }
     execute { puts word }
   end
+
+  line('build --env=:env') do |env|
+    execute { puts env }
+  end
 end
 
 CLI.run(ARGV)
