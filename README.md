@@ -2,11 +2,11 @@
 
 # Trees 🌲🌲🌲
 
-Terminals are so vague. You have commands, sub commands, args, flags and `ENV` variables. All seperated by spaces, dashes and equals signs when really all you have is a line of text.
+Terminals are so vague. You have commands, sub commands, args, flags and `ENV` variables. All seperated by spaces, dashes and equals signs... when really all you have is a line of text.
 
-CLI frameworks are vague too. They let you build your beautiful structure... component by component, then map user input to those components.
+CLI frameworks are vague too. You build your beautiful structure then map user input to those components. But now there's a translation gap between the structure you've defined and what the user types, plus it's difficult to get your structure to output the line of text that you'd like.
 
-Trees just gets you to write what the literal user input will be, then breaks it down into a nested tree of possible commands, subcommands and options. Think of your commands as routes with params. Think of the structure as a tree 🌲.
+Trees just gets you to write what the literal user input will be, then breaks it down into a tree of commands, subcommands and options if need be. Think of your commands as routes with params. Think of the structure as a tree 🌲.
 
 ## Example
 
@@ -53,7 +53,7 @@ line('switch build --reset-delay') do
 end
 ```
 
-## Autcomplete [UNRELEASED]
+## Autocomplete [UNRELEASED]
 
 Because all the lines are stored as a prefix tree (AKA Trie), you get an autocomplete for free!
 
@@ -89,7 +89,17 @@ Different placeholders in your string represent different data types.
 
 ### `:variable`
 
-...
+Variables are defined by prefixing a space separated word with a colon `:`.
+
+You can do fancy stuff like root level args pretty easily:
+```bash
+$ cli @prod command
+```
+
+Which would be defined like:
+```ruby
+line('@:environment command')
+```
 
 ### `--flag`, `-f`
 
