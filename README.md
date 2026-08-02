@@ -2,9 +2,9 @@
 
 # Trees 🌲🌲🌲
 
-Terminals are so vague. You have commands, sub commands, args, flags and `ENV` variables. All seperated by spaces, dashes and equals signs... when really all you have is a line of text.
+Terminals are so vague. You have commands, sub commands, args, flags and `ENV` variables. All separated by spaces, dashes and equals signs... when really all you have is a line of text.
 
-CLI frameworks are vague too. You build your beautiful structure then map user input to those components. But now there's a translation gap between the structure you've defined and what the user types, plus it's difficult to get your structure to output the line of text that you'd like.
+CLI frameworks are vague too. You build your beautiful structure then map user input to those components. But now there's a translation gap between the structure you've defined and what the user types.
 
 Trees just gets you to write what the literal user input will be, then breaks it down into a tree of commands, subcommands and options if need be. Think of your commands as routes with params. Think of the structure as a tree 🌲.
 
