@@ -27,7 +27,7 @@ module Trees
   end
 
   def run(args)
-    results = trie.match(path: args.join(' '))
+    results = trie.match(args:)
 
     execute_block(results:)
   end
