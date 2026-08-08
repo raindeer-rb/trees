@@ -41,7 +41,6 @@ module Trees
 
     def match(args:, current_node: @root_node, token_index: 0, offset: 0, params: {})
       return [] if args.empty?
-      return [] if current_key(args:, token_index:, offset:).nil?
 
       [
         *match_static(args:, current_node:, token_index:, offset:, params:),
@@ -51,11 +50,9 @@ module Trees
 
     private
 
-    # Static path segment: match a single character (real, or the synthetic
-    # ' ' separator that sits between tokens in the merged trie).
+    # Match an input character with the trie or mimic the space character between tokens in the trie.
     def match_static(args:, current_node:, token_index:, offset:, params:)
-      key = current_key(args:, token_index:, offset:)
-      child_node = current_node.child(key:)
+      child_node = current_node.child(key: args[token_index][offset] || ' ')
       return [] unless child_node
 
       next_token_index, next_offset = advance(args:, token_index:, offset:)
@@ -78,10 +75,11 @@ module Trees
     end
 
     def full_match(child_node:, args:, token_index:, offset:, params:)
-      return [] unless child_node.line
-      return [] unless current_key(args:, token_index:, offset:).nil?
+      if child_node.line && args[token_index + 1].nil?
+        return [Result.new(line: child_node.line, params:)]
+      end
 
-      [Result.new(line: child_node.line, params:)]
+      []
     end
 
     def capture_param(path:)
@@ -95,20 +93,6 @@ module Trees
       end
 
       param.join
-    end
-
-    # Returns the next character to match against the trie: a real character
-    # from within the current token, a synthetic ' ' representing the
-    # boundary between two tokens (mirroring the literal space the trie was
-    # built with), or nil once every token has been fully consumed.
-    def current_key(args:, token_index:, offset:)
-      return nil if token_index >= args.length
-
-      token = args[token_index]
-      return token[offset] if offset < token.length
-      return nil if token_index == args.length - 1
-
-      ' '
     end
 
     def advance(args:, token_index:, offset:)
