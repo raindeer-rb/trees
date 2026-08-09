@@ -6,11 +6,15 @@ require_relative 'trie'
 module Trees
   attr_reader :lines, :trie
 
+  TOKEN_SEPARATOR = ' '.freeze
+
   def line(path, &block)
     current_path << path
-    @current_line = Line.new(path: current_path.join, params: block.parameters.to_h)
+    current_path_joined = current_path.join(TOKEN_SEPARATOR)
 
-    lines[current_path.join] = @current_line
+    @current_line = Line.new(path: current_path_joined, params: block.parameters.to_h)
+
+    lines[current_path_joined] = @current_line
     trie.merge(line: @current_line)
 
     block.call if block_given?

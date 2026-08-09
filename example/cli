@@ -5,6 +5,8 @@ require_relative '../lib/trees'
 module CLI
   extend Trees
 
+  # Flat examples.
+
   line('say :word') do |word|
     summary { 'Talks to the user.' }
     execute { puts word }
@@ -12,6 +14,16 @@ module CLI
 
   line('build --env=:env') do |env|
     execute { puts env }
+  end
+
+  # Nested examples.
+
+  line('static') do
+    summary { 'Static site generation' }
+
+    line('build') do
+      execute { puts 'built' }
+    end
   end
 end
 
