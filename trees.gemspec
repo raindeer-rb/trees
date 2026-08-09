@@ -9,10 +9,10 @@ Gem::Specification.new do |spec|
   spec.email = ['maediprichard@gmail.com']
 
   spec.summary = 'A CLI framework where you write the literal terminal commands.'
-  spec.description = <<~DESCRIPTION
+  spec.description = <<~TEXT
     A CLI framework where you write the literal terminal commands and 
     Trees breaks them apart into a tree of options.
-  DESCRIPTION
+  TEXT
 
   spec.homepage = 'https://github.com/raindeer-rb/trees'
   spec.required_ruby_version = '>= 3.3.0'
