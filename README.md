@@ -10,7 +10,7 @@ Trees just gets you to write what the literal user input will be, then breaks it
 
 ## Example
 
-Taken from [Rain CLI](https://github.com/raindeer-rb/raindeer/tree/main/bin/rain) which powers the [Raindeer](https://raindeer.dev) web framework.
+Taken from [Rain CLI](https://github.com/raindeer-rb/raindeer/blob/main/lib/cli/cli.rb) which powers the [Raindeer](https://raindeer.dev) web framework.
 
 ```ruby
 line('new :app_name') do |app_name|
