@@ -2,12 +2,10 @@
 
 module Trees
   class Line
-    include LowType
-
     attr_reader :path, :params
     attr_accessor :summary, :execute
 
-    def initialize(path: String, params: {})
+    def initialize(path:, params: {})
       @path = path
       @params = params
 

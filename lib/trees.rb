@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'lowtype'
-
 require_relative 'line'
 require_relative 'trie'
 

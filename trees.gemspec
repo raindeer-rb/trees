@@ -27,6 +27,4 @@ Gem::Specification.new do |spec|
 
   spec.require_paths = ['lib']
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-
-  spec.add_dependency 'lowtype', '~> 1.4'
 end

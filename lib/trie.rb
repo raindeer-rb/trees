@@ -5,8 +5,6 @@ require_relative 'trie_node'
 
 module Trees
   class Trie
-    include LowType
-
     PARAM_DELIMITERS = [' ', ':'].freeze
 
     attr_reader :root_node

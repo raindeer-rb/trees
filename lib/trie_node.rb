@@ -4,12 +4,8 @@ require_relative 'line'
 
 module Trees
   class TrieNode
-    include LowType
-    using LowType::Syntax
-
-    type_reader nodes: Hash[String => TrieNode] | {}
-    type_reader params: Array[String] | Array
-    type_accessor line: Line | nil
+    attr_reader :nodes, :params, :line
+    attr_accessor :line
 
     def initialize
       @nodes = {}
@@ -17,11 +13,11 @@ module Trees
       @line = nil
     end
 
-    def child(key: String)
+    def child(key:)
       @nodes[key]
     end
 
-    def upsert_child(key: String)
+    def upsert_child(key:)
       @params << key if key.start_with?(':')
       @nodes[key] || @nodes[key] = TrieNode.new
     end
