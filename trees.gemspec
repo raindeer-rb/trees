@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary = 'A CLI framework where you write the literal terminal commands.'
   spec.description = <<~TEXT
     A CLI framework where you write the literal terminal commands and 
-    Trees breaks them apart into a tree of options.
+    Trees then breaks them apart into a tree of commands and options.
   TEXT
 
   spec.homepage = 'https://github.com/raindeer-rb/trees'
@@ -28,5 +28,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
 
-  spec.add_dependency 'low_type'
+  spec.add_dependency 'lowtype', '~> 1.4'
 end

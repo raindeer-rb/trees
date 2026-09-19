@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'low_type'
-
 module Trees
   class Line
     include LowType
