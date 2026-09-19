@@ -4,9 +4,14 @@
 
 Terminals are so vague. You have commands, sub commands, args, flags and `ENV` variables. All separated by spaces, dashes and equals signs... when really all you have is a line of text.
 
-CLI frameworks are vague too. You build your beautiful structure then map user input to those components. But now there's a translation gap between the structure you've defined and what the user types.
+CLI frameworks are vague too. You build your beautiful structure then map user input to those components... but now there's a translation gap between the structure you've defined and what the user types.
 
-Trees just gets you to write what the literal user input will be, then breaks it down into a tree of commands, subcommands and options if need be. Think of your commands as routes with params. Think of the structure as a tree 🌲.
+With Trees you write what the literal user input will be, then Trees breaks it down into a tree of commands, subcommands and options if need be. Think of your commands as routes with params. Think of the structure as a tree 🌲.
+
+**✨ Features:**
+- Flat and nested commands use the exact same API
+- Args and flags
+- Zero-dependencies
 
 ## Example
 
@@ -87,9 +92,9 @@ end
 
 Different placeholders in your string represent different data types.
 
-### `:variable`
+### `:arg`
 
-Variables are defined by prefixing a space separated word with a colon `:`.
+Args are defined by prefixing a space separated word with a colon `:`.
 
 You can do fancy stuff like root level args pretty easily:
 ```bash
@@ -101,15 +106,17 @@ Which would be defined like:
 line('@:environment command')
 ```
 
-### `--flag`, `-f`
+### Flag [UNRELEASED]
 
-### Boolean Flag [UNRELEASED]
+**Syntax:** `--flag`, `-f`
 
-### Value Flag
+### Option
+
+**Syntax:** `--flag=:value` or `-o :value`
 
 ```ruby
 line('build --env=:environment') do |environment|
-  # The environment variable is now available.
+  # The environment arg is now available.
 end
 ```
 
