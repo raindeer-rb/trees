@@ -9,6 +9,7 @@ module CLI
 
   line('say :word') do |word|
     summary { 'Talks to the user.' }
+    example { 'say hello' }
     execute { puts word }
   end
 

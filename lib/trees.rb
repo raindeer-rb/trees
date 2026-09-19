@@ -25,14 +25,20 @@ module Trees
   def summary(&block)
     @current_line.summary = block
   end
+  alias s summary
+
+  def example(&block)
+    @current_line.example = block
+  end
+  alias e example
 
   def execute(&block)
     @current_line.execute = block
   end
+  alias x execute
 
   def run(tokens)
     results = trie.match(tokens:)
-
     execute_block(results:)
   end
 
