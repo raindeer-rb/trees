@@ -4,9 +4,7 @@ require_relative 'line'
 require_relative 'trie'
 
 module Trees
-  attr_reader :lines, :trie
-
-  TOKEN_SEPARATOR = ' '.freeze
+  TOKEN_SEPARATOR = ' '
 
   def line(path, &block)
     current_path << path
@@ -17,7 +15,7 @@ module Trees
     lines[current_path_joined] = @current_line
     trie.merge(line: @current_line)
 
-    block.call if block_given?
+    block.call(**stub_required_keywords(block:)) if block_given?
 
     current_path.pop
   end
@@ -48,19 +46,24 @@ module Trees
     while results.count > 0
       result = results.pop
 
-      if result.line.execute
-        result.line.params.each do |param|
-          result.line.execute.binding.local_variable_set(param, result.params[param])
-        end
+      next unless result.line.execute
 
-        result.line.execute.call
-
-        return true
+      result.line.params.each do |param|
+        result.line.execute.binding.local_variable_set(param, result.params[param]) if result.params.key?(param)
       end
+
+      result.line.execute.call
+
+      return true
     end
 
     false
-  end  
+  end
+
+  # The "line" block defines the params that the "execute" child block will use later but doesn't itself execute user input.
+  def stub_required_keywords(block:)
+    block.parameters.filter_map { |type, name| [name, nil] if type == :keyreq }.to_h
+  end
 
   def current_path
     @current_path ||= []
