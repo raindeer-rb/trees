@@ -12,7 +12,7 @@ module Trees
     current_path << path
     current_path_joined = current_path.join(TOKEN_SEPARATOR)
 
-    @current_line = Line.new(path: current_path_joined, params: block.parameters.to_h)
+    @current_line = Line.new(path: current_path_joined, params: block.parameters.map(&:last))
 
     lines[current_path_joined] = @current_line
     trie.merge(line: @current_line)
@@ -49,7 +49,7 @@ module Trees
       result = results.pop
 
       if result.line.execute
-        result.line.params.values.each do |param|
+        result.line.params.each do |param|
           result.line.execute.binding.local_variable_set(param, result.params[param])
         end
 

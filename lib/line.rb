@@ -5,7 +5,7 @@ module Trees
     attr_reader :path, :params
     attr_accessor :summary, :example, :execute
 
-    def initialize(path:, params: {})
+    def initialize(path:, params: [])
       @path = path
       @params = params
 
