@@ -40,7 +40,7 @@ module Trees
     end
 
     describe '#match' do
-      context 'with a command' do
+      context 'with command' do
         it 'matches line' do
           trie.merge(line: Line.new(path: 'command'))
           expect(trie.match(tokens: ['command'])).to all(be_instance_of(Trie::Result))
@@ -53,7 +53,7 @@ module Trees
         end
       end
 
-      context 'with a command and arg' do
+      context 'with command and arg' do
         it 'matches line' do
           trie.merge(line: Line.new(path: 'command :arg'))
 
@@ -80,6 +80,32 @@ module Trees
         it 'matches lines' do
           expect(trie.match(tokens: %w[command subcommand 1])).to all(be_instance_of(Trie::Result))
           expect(trie.match(tokens: %w[command subcommand 1]).last.line).to have_attributes(path: 'command subcommand :arg_1')
+        end
+      end
+
+      context 'with command and sub command' do
+        before do
+          trie.merge(line: Line.new(path: 'render :path'))
+          trie.merge(line: Line.new(path: 'render :path -o :output'))
+        end
+
+        it 'matches command' do
+          result = trie.match(tokens: %w[render file.md]).first
+
+          expect(result.line).to have_attributes(path: 'render :path')
+          expect(result.params[:path]).to eq('file.md')
+        end
+
+        it 'matches sub command' do
+          result = trie.match(tokens: %w[render file.md -o file.html]).last
+
+          expect(result.line).to have_attributes(path: 'render :path -o :output')
+          expect(result.params).to eq(path: 'file.md', output: 'file.html')
+        end
+
+        it 'does not match partial input' do
+          expect(trie.match(tokens: ['render'])).to eq([])
+          expect(trie.match(tokens: %w[render file.md -o])).to eq([])
         end
       end
 

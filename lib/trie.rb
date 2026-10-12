@@ -38,7 +38,7 @@ module Trees
     end
 
     def match(tokens:, current_node: @root_node, index: 0, offset: 0, params: {})
-      return [] if tokens.empty?
+      return [] if tokens[index].nil?
 
       [
         *match_static(tokens:, current_node:, index:, offset:, params:),
