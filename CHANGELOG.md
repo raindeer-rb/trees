@@ -9,6 +9,7 @@ Minor features that don't break backwards compatibility are released as patches.
 
 ### Added
 
+- Flags in any order as the block's keyword arguments (`x:` for `-x` and `dry_run:` for `--dry-run`)
 - Support `example` block
 
 ## 0.3.0

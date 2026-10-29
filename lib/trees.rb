@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'flags'
 require_relative 'line'
 require_relative 'trie'
 
@@ -8,15 +9,11 @@ module Trees
 
   def line(path, &block)
     current_path << path
-    current_path_joined = current_path.join(TOKEN_SEPARATOR)
-
-    @current_line = Line.new(path: current_path_joined, params: block.parameters.map(&:last))
-
-    lines[current_path_joined] = @current_line
-    trie.merge(line: @current_line)
+    defined = define_line(block:)
 
     block.call(**stub_required_keywords(block:)) if block_given?
 
+    defined.keep_defaults
     current_path.pop
   end
 
@@ -35,29 +32,41 @@ module Trees
   end
   alias x execute
 
+  # The tokens match a line as they are, or else its args do, and its flags, in any order, are its keyword arguments.
   def run(tokens)
-    results = trie.match(tokens:)
-    execute_block(results:)
+    return true if execute_block(results: trie.match(tokens:))
+
+    args, flags = Flags.split(tokens)
+    return false if flags.nil? || flags.empty?
+
+    execute_block(results: trie.match(tokens: args), flags:)
   end
 
   private
 
-  def execute_block(results:)
+  # The deepest line that runs, and has a keyword argument for each flag.
+  def execute_block(results:, flags: {})
     while results.count > 0
       result = results.pop
 
       next unless result.line.execute
+      next unless (flags.keys - result.line.keywords).empty?
 
-      result.line.params.each do |param|
-        result.line.execute.binding.local_variable_set(param, result.params[param]) if result.params.key?(param)
-      end
-
-      result.line.execute.call
-
+      result.line.run(result.params.merge(flags))
       return true
     end
 
     false
+  end
+
+  def define_line(block:)
+    path = current_path.join(TOKEN_SEPARATOR)
+    keywords = block.parameters.filter_map { |type, name| name if %i[key keyreq].include?(type) }
+    @current_line = Line.new(path:, params: block.parameters.map(&:last), keywords:)
+
+    lines[path] = @current_line
+    trie.merge(line: @current_line)
+    @current_line
   end
 
   # The "line" block defines the params that the "execute" child block will use later but doesn't itself execute user input.

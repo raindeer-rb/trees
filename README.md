@@ -106,9 +106,23 @@ Which would be defined like:
 line('@:environment command')
 ```
 
-### Flag [UNRELEASED]
+### Flag
 
 **Syntax:** `--flag`, `-f`
+
+Flags come after the args in any order and are the block's keyword arguments.
+Running command `build a.md -x --dry-run --env prod` gives the following variables:
+
+```ruby
+line('build :path') do |path, dry_run: false, env: nil, x: false|
+  # dry_run => true
+  # x => true
+  # env => "prod"
+end
+```
+
+A flag's value is the token after it, or after its `=`, like `--env prod` or `--env=prod`, or else `true`.  
+Lines can still name flags in their path, like `build --env=:env` and they become *positional*/a path.
 
 ### Option
 
